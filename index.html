@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulátor NTS – dopad nové tarifní struktury (VVN/VN)</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header>
+  <h1>Kalkulátor NTS – VVN/VN</h1>
+  <p>Orientační odhad dopadu nové tarifní struktury distribuce elektřiny (platná od 1. 1. 2027)
+     na zákazníky na napěťové hladině VVN/VN. Vyplňte vstupní údaje a kalkulátor okamžitě
+     spočítá a porovná dosavadní a novou strukturu plateb za distribuci.</p>
+  <p class="disclaimer">Jedná se pouze o orientační výpočet. Skutečná fakturace se může lišit
+     v závislosti na konkrétních smluvních podmínkách a skutečném odběrném diagramu.</p>
+</header>
+
+<main>
+  <section class="card">
+    <h2>1. Základní údaje</h2>
+    <div class="grid-2">
+      <label>Distribuční území
+        <select id="distributor"></select>
+      </label>
+      <label>Napěťová hladina
+        <select id="voltage"></select>
+      </label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>2. Měsíční vstupní údaje</h2>
+    <p class="hint">Zadejte hodnoty pro jednotlivé měsíce. Tlačítkem „Vyplnit“ vedle řádku
+       můžete zadanou hodnotu rozkopírovat do všech měsíců.</p>
+    <div class="table-wrap">
+      <table id="input-table">
+        <thead>
+          <tr>
+            <th>Veličina</th>
+            <th>Led</th><th>Úno</th><th>Bře</th><th>Dub</th><th>Kvě</th><th>Čvn</th>
+            <th>Čvc</th><th>Srp</th><th>Zář</th><th>Říj</th><th>Lis</th><th>Pro</th>
+            <th>Vyplnit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-row="odber">
+            <td>Odběr elektřiny [MWh]</td>
+          </tr>
+          <tr data-row="rocniKap">
+            <td>Roční rezervovaná kapacita [MW]<br><small>(stará struktura)</small></td>
+          </tr>
+          <tr data-row="mesicniKap">
+            <td>Měsíční rezervovaná kapacita [MW]<br><small>(stará struktura)</small></td>
+          </tr>
+          <tr data-row="rezPrikon">
+            <td>Rezervovaný příkon [MW]<br><small>(nová struktura)</small></td>
+          </tr>
+          <tr data-row="maxVykon">
+            <td>Max. naměřený odebraný výkon [MW]</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="warnings"></div>
+  </section>
+
+  <section class="card">
+    <h2>3. Výsledky – srovnání ročních plateb</h2>
+    <div class="results-summary">
+      <div class="result-box old">
+        <span class="label">Dosavadní struktura</span>
+        <span class="value" id="result-old">–</span>
+      </div>
+      <div class="result-box arrow">→</div>
+      <div class="result-box new">
+        <span class="label">Nová struktura</span>
+        <span class="value" id="result-new">–</span>
+      </div>
+      <div class="result-box diff">
+        <span class="label">Rozdíl</span>
+        <span class="value" id="result-diff">–</span>
+      </div>
+    </div>
+    <p class="hint">Všechny částky jsou orientační, v Kč bez DPH.</p>
+  </section>
+
+  <section class="card">
+    <h2>4. Měsíční rozpad</h2>
+    <canvas id="diff-chart" height="100"></canvas>
+    <div class="table-wrap">
+      <table id="result-table">
+        <thead>
+          <tr>
+            <th>Veličina</th>
+            <th>Led</th><th>Úno</th><th>Bře</th><th>Dub</th><th>Kvě</th><th>Čvn</th>
+            <th>Čvc</th><th>Srp</th><th>Zář</th><th>Říj</th><th>Lis</th><th>Pro</th>
+            <th>Celkem</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-row="oldPay"><td>Platba – stará struktura [Kč]</td></tr>
+          <tr data-row="newPay"><td>Platba – nová struktura [Kč]</td></tr>
+          <tr data-row="tariff"><td>Zvolený tarif</td></tr>
+          <tr data-row="diffPay"><td>Rozdíl (nová − stará) [Kč]</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>5. Optimalizace rezervovaného příkonu</h2>
+    <div id="optimization-box"><p>—</p></div>
+  </section>
+
+  <section class="card">
+    <h2>6. Alternativní jednosložková cena</h2>
+    <p class="hint">Tato varianta zpoplatňuje pouze skutečnou spotřebu (bez fixní složky za výkon
+       či kapacitu) a hodí se zejména pro příležitostné špičkové odběry.</p>
+    <div class="results-summary">
+      <div class="result-box neutral">
+        <span class="label">Roční platba při jednosložkové ceně</span>
+        <span class="value" id="result-single">–</span>
+      </div>
+      <div class="result-box neutral">
+        <span class="label">Vyplatí se při roční spotřebě do</span>
+        <span class="value" id="result-single-threshold">–</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Reimplementace kalkulátoru „kalkulator-vvn-vn-2026-lds260522.xlsx“ jako webová aplikace.
+     Sazby distribučních společností jsou převzaty z přiloženého ceníku.</p>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
