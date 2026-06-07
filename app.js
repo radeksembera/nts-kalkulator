@@ -175,6 +175,8 @@ function buildInputTable() {
   const tbody = document.querySelector("#input-table tbody");
   ROWS.forEach(rowKey => {
     const tr = tbody.querySelector(`tr[data-row="${rowKey}"]`);
+    const monthInputs = [];
+
     for (let m = 0; m < N; m++) {
       const td = document.createElement("td");
       const input = document.createElement("input");
@@ -187,21 +189,24 @@ function buildInputTable() {
       input.addEventListener("input", recalculate);
       td.appendChild(input);
       tr.appendChild(td);
+      monthInputs.push(input);
+
+      if (m === 0) {
+        const fillTd = document.createElement("td");
+        const fillBtn = document.createElement("button");
+        fillBtn.textContent = "→";
+        fillBtn.title = "Vyplnit hodnotou z ledna do všech měsíců";
+        fillBtn.type = "button";
+        fillBtn.className = "fill-btn";
+        fillBtn.addEventListener("click", () => {
+          const value = monthInputs[0].value;
+          monthInputs.forEach(inp => { inp.value = value; });
+          recalculate();
+        });
+        fillTd.appendChild(fillBtn);
+        tr.appendChild(fillTd);
+      }
     }
-    const fillTd = document.createElement("td");
-    const fillBtn = document.createElement("button");
-    fillBtn.textContent = "↔";
-    fillBtn.title = "Vyplnit hodnotou z ledna do všech měsíců";
-    fillBtn.type = "button";
-    fillBtn.className = "fill-btn";
-    fillBtn.addEventListener("click", () => {
-      const inputs = tr.querySelectorAll("input");
-      const value = inputs[0].value;
-      inputs.forEach(inp => { inp.value = value; });
-      recalculate();
-    });
-    fillTd.appendChild(fillBtn);
-    tr.appendChild(fillTd);
   });
 }
 
