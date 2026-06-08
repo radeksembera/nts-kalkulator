@@ -163,6 +163,7 @@ function buildSelectors() {
       opt.textContent = v;
       voltageSel.appendChild(opt);
     });
+    if (voltages.includes("VN")) voltageSel.value = "VN";
   }
 
   distributorSel.addEventListener("change", () => { refreshVoltages(); recalculate(); });
@@ -176,6 +177,27 @@ function buildInputTable() {
   ROWS.forEach(rowKey => {
     const tr = tbody.querySelector(`tr[data-row="${rowKey}"]`);
     const monthInputs = [];
+
+    if (rowKey === "rocniKap") {
+      const td = document.createElement("td");
+      const input = document.createElement("input");
+      input.type = "number";
+      input.min = "0";
+      input.step = "any";
+      input.value = "0";
+      input.dataset.row = rowKey;
+      input.dataset.month = 0;
+      input.addEventListener("input", recalculate);
+      td.appendChild(input);
+      tr.appendChild(td);
+
+      const noteTd = document.createElement("td");
+      noteTd.colSpan = N;
+      noteTd.className = "note-cell";
+      noteTd.textContent = "Hodnota platí pro celý rok";
+      tr.appendChild(noteTd);
+      return;
+    }
 
     for (let m = 0; m < N; m++) {
       const td = document.createElement("td");
@@ -223,7 +245,7 @@ function readInputs() {
     distributor: document.getElementById("distributor").value,
     voltage: document.getElementById("voltage").value,
     odber: get("odber"),
-    rocniKap: get("rocniKap"),
+    rocniKap: Array(N).fill(get("rocniKap")[0] || 0),
     mesicniKap: get("mesicniKap"),
     rezPrikon: get("rezPrikon"),
     maxVykon: get("maxVykon")
