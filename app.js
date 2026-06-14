@@ -232,6 +232,61 @@ function buildInputTable() {
   });
 }
 
+// Ukázková data (list "Výpočet" z přiloženého xlsx, ČEZ Distribuce / VN).
+const SAMPLE_DATA = {
+  distributor: "ČEZ Distribuce, a. s.",
+  voltage: "VN",
+  odber:      [128.308, 128.308, 128.308, 128.308, 128.308, 128.308, 128.308, 128.308, 128.308, 87.919, 128.308, 128.308],
+  rocniKap:   0.155,
+  mesicniKap: [0.115, 0.095, 0.115, 0.115, 0.115, 0.115, 0.115, 0.115, 0.115, 0.115, 0.115, 0.115],
+  rezPrikon:  [0.346, 0.346, 0.346, 0.346, 0.346, 0.346, 0.346, 0.346, 0.346, 0.346, 0.346, 0.346],
+  maxVykon:   [0.246, 0.223, 0.246, 0.246, 0.246, 0.246, 0.246, 0.246, 0.246, 0.246, 0.246, 0.246]
+};
+
+const STORAGE_KEY = "nts-kalkulator-values";
+
+/** Zapíše hodnoty (distributor, voltage, měsíční řady) do vstupních polí. */
+function applyValues(data) {
+  document.getElementById("distributor").value = data.distributor;
+  document.getElementById("distributor").dispatchEvent(new Event("change"));
+  document.getElementById("voltage").value = data.voltage;
+
+  const set = (rowKey, values) => {
+    document.querySelectorAll(`#input-table input[data-row="${rowKey}"]`).forEach(input => {
+      const m = +input.dataset.month;
+      const value = Array.isArray(values) ? values[m] : values;
+      if (value !== undefined) input.value = value;
+    });
+  };
+
+  set("odber", data.odber);
+  set("rocniKap", data.rocniKap);
+  set("mesicniKap", data.mesicniKap);
+  set("rezPrikon", data.rezPrikon);
+  set("maxVykon", data.maxVykon);
+
+  recalculate();
+}
+
+function fillSampleData() {
+  applyValues(SAMPLE_DATA);
+}
+
+function saveValues() {
+  const input = readInputs();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(input));
+}
+
+function loadSavedValues() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+  try {
+    applyValues(JSON.parse(raw));
+  } catch {
+    // poškozená data v localStorage – ignorovat
+  }
+}
+
 function readInputs() {
   const get = rowKey => {
     const arr = [];
@@ -396,5 +451,10 @@ function recalculate() {
 document.addEventListener("DOMContentLoaded", () => {
   buildSelectors();
   buildInputTable();
+
+  document.getElementById("fill-sample").addEventListener("click", fillSampleData);
+  document.getElementById("save-values").addEventListener("click", saveValues);
+
+  loadSavedValues();
   recalculate();
 });
