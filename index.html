@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kalkulátor NTS – dopad nové tarifní struktury (VVN/VN)</title>
 <link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="favicon.png">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -89,6 +90,16 @@
     <p class="hint">Všechny částky jsou orientační, v Kč bez DPH.</p>
   </section>
 
+  <a class="flow-banner" href="https://flowenergy.cz/#kontakt" target="_blank" rel="noopener">
+    <span class="flow-banner-text">Konzultace NTS zdarma od</span>
+    <span class="flow-logo">
+      <span class="flow-logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>
+      </span>
+      <span class="flow-logo-text">Flow Energy</span>
+    </span>
+  </a>
+
   <section class="card">
     <h2>4. Měsíční rozpad</h2>
     <canvas id="diff-chart" height="100"></canvas>
@@ -117,16 +128,6 @@
     <div id="optimization-box"><p>—</p></div>
   </section>
 
-  <a class="flow-banner" href="https://flowenergy.cz/#kontakt" target="_blank" rel="noopener">
-    <span class="flow-banner-text">Konzultace NTS zdarma od</span>
-    <span class="flow-logo">
-      <span class="flow-logo-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>
-      </span>
-      <span class="flow-logo-text">Flow Energy</span>
-    </span>
-  </a>
-
   <section class="card">
     <h2>6. Alternativní jednosložková cena</h2>
     <p class="hint">Tato varianta zpoplatňuje pouze skutečnou spotřebu (bez fixní složky za výkon
@@ -142,10 +143,20 @@
       </div>
     </div>
   </section>
+
+  <a class="flow-banner" href="https://flowenergy.cz/#kontakt" target="_blank" rel="noopener">
+    <span class="flow-banner-text">Konzultace NTS zdarma od</span>
+    <span class="flow-logo">
+      <span class="flow-logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>
+      </span>
+      <span class="flow-logo-text">Flow Energy</span>
+    </span>
+  </a>
 </main>
 
 <footer>
-  <p>Reimplementace kalkulátoru „kalkulator-vvn-vn-2026-lds260522.xlsx“ jako webová aplikace.
+  <p>Webová Reimplementace kalkulátoru <a href="https://www.eru.cz" target="_blank" rel="noopener">ERU</a> kalkulátoru.
      Sazby distribučních společností jsou převzaty z přiloženého ceníku.</p>
 </footer>
 
