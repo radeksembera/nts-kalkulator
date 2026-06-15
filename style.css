@@ -128,6 +128,12 @@ th { background: #eef2f7; font-weight: 600; }
 }
 .action-btn:hover { background: var(--color-primary); color: #fff; }
 
+.action-btn-gray {
+  border-color: var(--color-muted);
+  color: var(--color-muted);
+}
+.action-btn-gray:hover { background: var(--color-muted); color: #fff; }
+
 .results-summary {
   display: flex;
   flex-wrap: wrap;

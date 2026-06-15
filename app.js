@@ -279,6 +279,13 @@ function saveValues() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(input));
 }
 
+function clearValues() {
+  document.querySelectorAll("#input-table tbody input").forEach(input => {
+    input.value = "0";
+  });
+  recalculate();
+}
+
 function loadSavedValues() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return;
@@ -493,6 +500,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("fill-sample").addEventListener("click", fillSampleData);
   document.getElementById("save-values").addEventListener("click", saveValues);
+  document.getElementById("clear-values").addEventListener("click", clearValues);
 
   loadSavedValues();
   recalculate();
