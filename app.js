@@ -188,6 +188,7 @@ function buildInputTable() {
       input.dataset.row = rowKey;
       input.dataset.month = 0;
       input.addEventListener("input", recalculate);
+      input.addEventListener("blur", pushAnalyticsSnapshot);
       td.appendChild(input);
       tr.appendChild(td);
 
@@ -209,6 +210,7 @@ function buildInputTable() {
       input.dataset.row = rowKey;
       input.dataset.month = m;
       input.addEventListener("input", recalculate);
+      input.addEventListener("blur", pushAnalyticsSnapshot);
       td.appendChild(input);
       tr.appendChild(td);
       monthInputs.push(input);
@@ -432,17 +434,54 @@ function renderWarnings(result) {
   container.appendChild(ul);
 }
 
+let lastInput = null;
+let lastResult = null;
+
 function recalculate() {
   const input = readInputs();
   if (!input.distributor || !input.voltage) return;
 
   const result = calculate(input);
+  lastInput = input;
+  lastResult = result;
 
   renderSummary(result);
   renderResultTable(result);
   renderChart(result);
   renderOptimization(result);
   renderWarnings(result);
+}
+
+/**
+ * Pošle do dataLayeru snímek aktuálně zadaných hodnot a výsledků.
+ * Volá se při opuštění (blur) libovolného vstupního pole, aby se
+ * v GA4 dala kampani z UTM parametrů přiřadit konkrétní zadaná data.
+ */
+function pushAnalyticsSnapshot() {
+  if (!lastInput || !lastResult || !window.dataLayer) return;
+
+  window.dataLayer.push({
+    event: "nts_calculation",
+    odber_01: lastInput.odber[0],
+    odber_02: lastInput.odber[1],
+    odber_03: lastInput.odber[2],
+    odber_04: lastInput.odber[3],
+    odber_05: lastInput.odber[4],
+    odber_06: lastInput.odber[5],
+    odber_07: lastInput.odber[6],
+    odber_08: lastInput.odber[7],
+    odber_09: lastInput.odber[8],
+    odber_10: lastInput.odber[9],
+    odber_11: lastInput.odber[10],
+    odber_12: lastInput.odber[11],
+    rocni_kap: lastInput.rocniKap[0],
+    mesicni_kap_01: lastInput.mesicniKap[0],
+    rez_prikon_01: lastInput.rezPrikon[0],
+    max_vykon_01: lastInput.maxVykon[0],
+    result_old: Math.round(lastResult.oldTotal),
+    result_new: Math.round(lastResult.newTotal),
+    result_diff: Math.round(lastResult.diffTotal)
+  });
 }
 
 // ---------------------------------------------------------------------------
